@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const http = require('http');
 const socketIO = require('socket.io');
 const Game = require('./game');
@@ -19,6 +20,7 @@ class GameServer {
 
     configureServer() {
         this.app.use(express.static('public'));
+        this.app.use(cors());
         this.app.get('/', (req, res) => {
             res.sendFile('../public/index.html');
         });

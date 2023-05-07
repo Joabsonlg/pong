@@ -2,7 +2,7 @@ let side = 'spectator';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-const socket = io('http://localhost:3000');
+const socket = io('https://pong-sb49.onrender.com/');
 
 let paddleHeight = 150;
 let paddleWidth = 10;
