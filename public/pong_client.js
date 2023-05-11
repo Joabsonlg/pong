@@ -43,6 +43,11 @@ socket.on('startGame', () => {
     startGame();
 });
 
+socket.on('scoreUpdate', (data) => {
+    document.querySelector('#left-score').innerText = data.left;
+    document.querySelector('#right-score').innerText = data.right;
+});
+
 canvas.addEventListener('mousemove', (event) => {
     if (side !== 'spectator') {
         const mouseY = event.clientY - canvas.getBoundingClientRect().top;

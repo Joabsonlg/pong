@@ -19,3 +19,24 @@ canvas {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100vw;
+}
+
+.scores {
+    min-width: 35%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 2rem;
+    color: rgb(0, 162, 255);
+    margin-top: 20px;
+}
+  
+#left-score, #right-score {
+    display: inline-block;
+    margin: 0 30px;
+}

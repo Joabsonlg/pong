@@ -16,6 +16,8 @@ class Game {
         this.canvasWidth = 900;
         this.leftPaddleY = (this.canvasHeight - this.paddle.height) / 2;
         this.rightPaddleY = (this.canvasHeight - this.paddle.height) / 2;
+        this.leftScore = 0;
+        this.rightScore = 0;
     }
 
     setSocketIO(io) {
@@ -88,9 +90,14 @@ class Game {
             // Bola passou da raquete esquerda
             this.resetBall();
             // Atualizar placar ou executar ação adequada
+            this.rightScore++;
+            this.resetBall();
+            this.io.emit('scoreUpdate', { left: this.leftScore, right: this.rightScore });
         } else if (this.ball.x + this.ball.radius > this.canvasWidth) {
             // Bola passou da raquete direita
+            this.leftScore++;
             this.resetBall();
+            this.io.emit('scoreUpdate', { left: this.leftScore, right: this.rightScore });
             // Atualizar placar ou executar ação adequada
         }
     }
@@ -98,8 +105,15 @@ class Game {
     resetBall() {
         this.ball.x = this.canvasWidth / 2;
         this.ball.y = this.canvasHeight / 2;
-        this.ball.dx *= Math.random() < 0.5 ? -1 : 1;
-        this.ball.dy *= Math.random() < 0.5 ? -1 : 1;
+        this.ball.dx = 0;
+        this.ball.dy = 0;
+
+        // Aguardar 1 segundo antes de reiniciar o jogo
+        setTimeout(() => {
+            // Definir velocidade aleatória
+            this.ball.dx = Math.random() < 0.5 ? -5 : 5;
+            this.ball.dy = Math.random() < 0.5 ? -5 : 5;
+        }, 1000);
     }
 }
 
