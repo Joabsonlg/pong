@@ -41,20 +41,79 @@ canvas {
     margin: 0 30px;
 }
 
-.waiting-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+#waitingScreen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    max-width: 400px;
+    height: 30vh;
+    max-height: 200px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
+  }  
+  
+  .waitingScreen-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: white;
+    padding: 20px;
   }
   
-  .waiting-screen p {
-    color: white;
+  .waitingScreen-inner h1 {
     font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .waitingScreen-inner p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .waitingText {
     text-align: center;
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  @media screen and (max-width: 600px) {
+    #waitingScreen {
+      width: 90vw;
+      max-width: 300px;
+      height: 40vh;
+      max-height: 150px;
+    }
+    
+    .waitingScreen-inner {
+      padding: 10px;
+    }
+  
+    .waitingScreen-inner h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+  
+    .waitingScreen-inner p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+  
+    .waitingText {
+      font-size: 18px;
+      margin-top: 10px;
+    }
   }

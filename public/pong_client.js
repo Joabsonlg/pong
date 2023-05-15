@@ -39,15 +39,22 @@ socket.on('paddleData', (data) => {
     rightPaddleY = (canvas.height - paddleHeight) / 2;
 });
 
-socket.on('waitingScreen', () => {
-    waitingScreen = document.getElementById("waiting-screen");
+socket.on("waitForPlayer", () => {
+    let waitingScreen = document.getElementById("waitingScreen");
+    //document.querySelector('#waitingText').innerText = "Jogador encontrado. A partida irá iniciar!";
+    // Exibir a tela de espera
     waitingScreen.style.display = "flex";
-});
+  });
+  
 
 socket.on('startGame', () => {
-    waitingScreen = document.getElementById("waiting-screen");
-    waitingScreen.style.display = "none";
-    startGame();
+    let waitingScreen = document.getElementById("waitingScreen");
+    document.querySelector('#waitingText').innerText = "Jogador encontrado. A partida irá iniciar!";
+    // Esperando 3 segundos antes de iniciar a partida e parar exibição do popup
+    setTimeout(() => {
+        waitingScreen.style.display = "none";
+        startGame();
+    }, 3000);
 });
 
 socket.on('scoreUpdate', (data) => {

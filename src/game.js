@@ -37,11 +37,11 @@ class Game {
 
         this.players.push(player);
 
-        //if (this.players.length === 2) {
+        if (this.players.length === 2) {
             this.io.emit('startGame');
-       // }else if(this.players.length === 1){
-           // this.io.emit('waitingScreen');
-        //}
+        }else if(this.players.length === 1){
+            this.io.emit('waitForPlayer');
+        }
     }
 
     removePlayer(playerId) {
