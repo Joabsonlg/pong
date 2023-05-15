@@ -40,3 +40,21 @@ canvas {
     display: inline-block;
     margin: 0 30px;
 }
+
+.waiting-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .waiting-screen p {
+    color: white;
+    font-size: 24px;
+    text-align: center;
+  }

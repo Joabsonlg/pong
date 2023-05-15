@@ -38,7 +38,14 @@ class GameServer {
             });
 
             socket.on('updatePaddle', (data) => {
-                socket.broadcast.emit('updatePaddle', data);
+                if (data.player === 'left') {
+                    this.game.leftPaddleY = data.y;
+                } else {
+                    this.game.rightPaddleY = data.y;
+                }
+            
+                // Transmitir a atualização para todos os clientes, incluindo o cliente que enviou a atualização
+                this.io.emit('updatePaddle', data);
             });
         });
 

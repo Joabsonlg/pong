@@ -39,7 +39,14 @@ socket.on('paddleData', (data) => {
     rightPaddleY = (canvas.height - paddleHeight) / 2;
 });
 
+socket.on('waitingScreen', () => {
+    waitingScreen = document.getElementById("waiting-screen");
+    waitingScreen.style.display = "flex";
+});
+
 socket.on('startGame', () => {
+    waitingScreen = document.getElementById("waiting-screen");
+    waitingScreen.style.display = "none";
     startGame();
 });
 
@@ -55,7 +62,8 @@ canvas.addEventListener('mousemove', (event) => {
         if (side === 'left') leftPaddleY = mouseY - paddleHeight / 2;
         else rightPaddleY = mouseY - paddleHeight / 2;
 
-        socket.emit('updatePaddle', {player: side, y: mouseY - paddleHeight / 2});
+        // Enviar a posição atualizada do paddle para o servidor
+        socket.emit('updatePaddle', { player: side, y: mouseY - paddleHeight / 2 });
     }
 });
 
