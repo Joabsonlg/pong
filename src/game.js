@@ -1,11 +1,13 @@
 class Game {
-    constructor() {
+    constructor(roomId) {
+        this.roomId = roomId;
         this.players = [];
         this.ball = {
             x: 0,
             y: 0,
-            dx: 5,
-            dy: 5,
+            dx: 10,
+            dy: 10,
+            dt: 0,
             radius: 10
         };
         this.paddle = {
@@ -18,6 +20,7 @@ class Game {
         this.rightPaddleY = (this.canvasHeight - this.paddle.height) / 2;
         this.leftScore = 0;
         this.rightScore = 0;
+        this.gameStarted = false;
     }
 
     setSocketIO(io) {
@@ -25,23 +28,21 @@ class Game {
     }
 
     addPlayer(socket) {
-        const player = {id: socket.id, side: 'spectator'};
+        const player = {id: socket.id, side: null};
 
         if (this.players.length < 2) {
             if (this.players.length === 0) {
+                console.log('Player 1 of room ' + this.roomId + ' joined!');
                 player.side = 'left';
             } else {
+                console.log('Player 2 of room ' + this.roomId + ' joined!');
                 player.side = 'right';
             }
         }
 
         this.players.push(player);
 
-        if (this.players.length === 2) {
-            this.io.emit('startGame');
-        }else if(this.players.length === 1){
-            this.io.emit('waitForPlayer');
-        }
+        socket.join(this.roomId);
     }
 
     removePlayer(playerId) {
@@ -49,19 +50,28 @@ class Game {
         if (index !== -1) {
             this.players.splice(index, 1);
         }
-        this.ball = {
-            x: 0,
-            y: 0,
-            dx: 5,
-            dy: 5
-        };
+
+        this.resetBall();
+        this.resetGame();
+    }
+
+    isEmpty() {
+        return this.players.length === 0;
+    }
+
+    isFull() {
+        return this.players.length === 2;
     }
 
     getActivePlayers() {
-        return this.players.filter((player) => player.side !== 'spectator');
+        return this.players;
     }
 
     updateBall() {
+        if (!this.gameStarted) {
+            return;
+        }
+
         this.ball.x += this.ball.dx;
         this.ball.y += this.ball.dy;
 
@@ -94,12 +104,12 @@ class Game {
             // Atualizar placar ou executar ação adequada
             this.rightScore++;
             this.resetBall();
-            this.io.emit('scoreUpdate', { left: this.leftScore, right: this.rightScore });
+            this.io.to(this.roomId).emit('scoreUpdate', {left: this.leftScore, right: this.rightScore});
         } else if (this.ball.x + this.ball.radius > this.canvasWidth) {
             // Bola passou da raquete direita
             this.leftScore++;
             this.resetBall();
-            this.io.emit('scoreUpdate', { left: this.leftScore, right: this.rightScore });
+            this.io.to(this.roomId).emit('scoreUpdate', {left: this.leftScore, right: this.rightScore});
             // Atualizar placar ou executar ação adequada
         }
     }
@@ -113,9 +123,32 @@ class Game {
         // Aguardar 1 segundo antes de reiniciar o jogo
         setTimeout(() => {
             // Definir velocidade aleatória
-            this.ball.dx = Math.random() < 0.5 ? -5 : 5;
-            this.ball.dy = Math.random() < 0.5 ? -5 : 5;
+            this.ball.dx = Math.random() < 0.5 ? -10 : 10;
+            this.ball.dy = Math.random() < 0.5 ? -10 : 10;
         }, 1000);
+    }
+
+    resetGame() {
+        this.ball = {
+            x: 0,
+            y: 0,
+            dx: 5,
+            dy: 5,
+            radius: 10
+        };
+        this.leftScore = 0;
+        this.rightScore = 0;
+        this.gameStarted = false;
+        this.io.to(this.roomId).emit('resetGame');
+    }
+
+    initGame() {
+        setInterval(() => {
+            if (this.gameStarted) {
+                this.updateBall();
+                this.io.to(this.roomId).emit('ballData', this.ball);
+            }
+        }, 33.33); // 30 quadros por segundo (1000ms / 30 = 33.33)
     }
 }
 

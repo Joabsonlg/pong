@@ -2,7 +2,7 @@ let side = 'spectator';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-const socket = io('https://pong-sb49.onrender.com/');
+const socket = io();
 
 let paddleHeight = 150;
 let paddleWidth = 10;
@@ -41,11 +41,10 @@ socket.on('paddleData', (data) => {
 
 socket.on("waitForPlayer", () => {
     let waitingScreen = document.getElementById("waitingScreen");
-    //document.querySelector('#waitingText').innerText = "Jogador encontrado. A partida irá iniciar!";
+    document.querySelector('#waitingText').innerText = "Aguardando segundo jogador...";
     // Exibir a tela de espera
     waitingScreen.style.display = "flex";
-  });
-  
+});
 
 socket.on('startGame', () => {
     let waitingScreen = document.getElementById("waitingScreen");
@@ -54,7 +53,7 @@ socket.on('startGame', () => {
     setTimeout(() => {
         waitingScreen.style.display = "none";
         startGame();
-    }, 3000);
+    }, 1000);
 });
 
 socket.on('scoreUpdate', (data) => {
@@ -70,7 +69,7 @@ canvas.addEventListener('mousemove', (event) => {
         else rightPaddleY = mouseY - paddleHeight / 2;
 
         // Enviar a posição atualizada do paddle para o servidor
-        socket.emit('updatePaddle', { player: side, y: mouseY - paddleHeight / 2 });
+        socket.emit('updatePaddle', {player: side, y: mouseY - paddleHeight / 2});
     }
 });
 
